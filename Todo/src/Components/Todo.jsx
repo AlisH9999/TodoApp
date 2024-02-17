@@ -75,7 +75,7 @@ const Todo = () => {
                     editRef.current.value = "";
                     setEdittask(false);
                   }}
-                  class="text-gray-700 absolute end-1.5 bottom-1.5 bg-yellow-300  hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-small rounded-lg text-xs px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  class="text-gray-700 absolute end-1.5 bottom-1.5 bg-yellow-300  hover:bg-yellow-500 focus:ring-4 focus:outline-none focus:ring-blue-300 font-small rounded-lg text-xs px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   clear
                 </button>
@@ -83,7 +83,7 @@ const Todo = () => {
                 <button
                   type="submit"
                   onClick={handleTodoAdd}
-                  class="text-gray-700 absolute end-1.5 bottom-1.5 bg-yellow-300  hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-small rounded-lg text-xs px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  class="text-gray-700 absolute end-1.5 bottom-1.5 bg-yellow-300  hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-small rounded-lg text-xs px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   Add
                 </button>
@@ -93,13 +93,14 @@ const Todo = () => {
         </div>
 
         <div class="text-center ">
+         
           {taskList &&
             Object.entries(taskList).map(([key, value]) => (
               <div
                 key={key}
                 class="mb-2 p-1 flex flex-row justify-between rounded-lg text-center bg-slate-300 mr-2 ml-2"
               >
-                <p>{value}</p>
+                <p class="text-gray-700 ml-3 text-sm">{value}</p>
                 <div class="flex flex-row  bg-slate-300">
                   <CiEdit
                     class="mr-2 size-5 text-gray-700 dark:text-gray-400"
@@ -111,12 +112,20 @@ const Todo = () => {
                   />
 
                   <AiOutlineDelete
-                    class="size-5 text-red-600 dark:text-gray-400"
+                    class="mr-2 size-5 text-red-600 dark:text-gray-400"
                     onClick={() => {
                       console.log("deleting", key);
                       delete taskList[key], console.log("tasklist", taskList);
                     }}
                   />
+                 <select onChange={(e)=>{console.log("Select",e.target.value)}}>
+                  <option>Status</option>
+                  <option value='Not Started'>Not Started</option>
+                  <option value='In Progress'>In Progress</option>
+                  <option value='Pending'>Pending</option>
+                  <option value='Completed'>Completed</option>
+                 
+                 </select>
                 </div>
               </div>
             ))}
