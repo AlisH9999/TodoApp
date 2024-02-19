@@ -1,38 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoAddSharp } from "react-icons/io5";
 import { CiEdit } from "react-icons/ci";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useRef } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 const Todo = () => {
   const editRef = useRef();
   const [task, setTask] = useState();
+  const [title,setTitle]=useState()
   const [taskList, setTaskList] = useState([]);
   const [edittask, setEdittask] = useState(false);
+  const [edit, setEdit] = useState();
 
+  useEffect(() => {
+    console.log("TaskList", taskList);
+  }, [taskList]);
+  
   const todoHandler = (e) => {
     if (edittask) {
-      console.log("edit task", e.target.value);
-      setTask(e.target.value);
-      const key = Object.keys(taskList).find((key) => taskList[key] === task);
-      setTaskList((prevtask) => ({ ...prevtask, [key]: e.target.value }));
+      console.log("editing this task", edit);
+      //taskList.map((item)=>item.id===edit?(console.log('item',item.title)):taskList)
+      setTaskList((prev) =>
+        prev.map((item) =>
+          item.id === edit ? { ...item, title: e.target.value } : item
+        )
+      );
+      console.log("edit done", taskList);
     } else {
-      console.log("no edit task", task);
-      setTask(e.target.value);
+      //console.log("no edit task", task);
+      setTitle(e.target.value);
     }
 
     // setEdittask(false)
   };
-
+  console.log("EDITTTTTTTTTTTTTTTTTTTT", edit);
   const handleTodoAdd = (e) => {
-    if (edittask) {
-    } else {
-      console.log("length of tasklist", Object.keys(taskList).length);
-      setTaskList((prev) => ({ ...prev, [uuidv4().slice(0, 8)]: task }));
-      console.log("task", task);
+     
+      setTaskList((prev) => [
+        ...prev,
+        { id: Date.now(), title: title, status: "" },
+      ]);
+
       e.preventDefault();
-    }
+    
   };
   console.log("tasklist", taskList);
   return (
@@ -82,7 +92,9 @@ const Todo = () => {
               ) : (
                 <button
                   type="submit"
-                  onClick={handleTodoAdd}
+                  onClick={(e) => {
+                    handleTodoAdd(e), (editRef.current.value = "");
+                  }}
                   class="text-gray-700 absolute end-1.5 bottom-1.5 bg-yellow-300  hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-blue-300 font-small rounded-lg text-xs px-2 py-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   Add
@@ -93,39 +105,50 @@ const Todo = () => {
         </div>
 
         <div class="text-center ">
-         
           {taskList &&
-            Object.entries(taskList).map(([key, value]) => (
+            taskList.map((value) => (
               <div
-                key={key}
+                // key={key}
                 class="mb-2 p-1 flex flex-row justify-between rounded-lg text-center bg-slate-300 mr-2 ml-2"
               >
-                <p class="text-gray-700 ml-3 text-sm">{value}</p>
+                <p class="text-gray-700 ml-3 text-sm">{value.title}</p>
                 <div class="flex flex-row  bg-slate-300">
                   <CiEdit
-                    class="mr-2 size-5 text-gray-700 dark:text-gray-400"
+                    class="mr-2 size-4 text-gray-700 dark:text-gray-400"
                     onClick={() => {
-                      editRef.current.value = value;
+                      editRef.current.value = value.title;
+                      setEdit(value.id);
                       setEdittask(true);
-                      setTask(value);
                     }}
                   />
 
                   <AiOutlineDelete
-                    class="mr-2 size-5 text-red-600 dark:text-gray-400"
+                    class="mr-2 size-4 text-red-600 dark:text-gray-400"
                     onClick={() => {
-                      console.log("deleting", key);
-                      delete taskList[key], console.log("tasklist", taskList);
+                      console.log("deleting", value.id);
+                      setTaskList(
+                        taskList.filter((task) => task.id !== value.id)
+                      );
                     }}
                   />
-                 <select onChange={(e)=>{console.log("Select",e.target.value)}}>
-                  <option>Status</option>
-                  <option value='Not Started'>Not Started</option>
-                  <option value='In Progress'>In Progress</option>
-                  <option value='Pending'>Pending</option>
-                  <option value='Completed'>Completed</option>
-                 
-                 </select>
+                  <select
+                    class="rounded-lg text-gray-700 text-xs"
+                    onChange={(e) => {
+                      console.log("Select", value, e.target.value);
+                      setTaskList((prev) =>
+                        prev.map((item) =>
+                          item.id === value.id
+                            ? { ...value, status: e.target.value }
+                            : item
+                        )
+                      );
+                    }}
+                  >
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
                 </div>
               </div>
             ))}
