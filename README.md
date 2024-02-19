@@ -37,6 +37,9 @@ Start the server
 ```bash
   npm run dev
 ```
+
+## Screenshots
+
 ![Screenshot from 2024-02-20 01-51-50](https://github.com/AlisH9999/TodoApp/assets/78138009/5d836030-fd29-4a9e-a89e-93c917516b47)
 
 
